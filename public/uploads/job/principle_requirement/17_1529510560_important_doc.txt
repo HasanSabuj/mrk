@@ -1,0 +1,134 @@
+<style>
+    table#main_table {
+        border-collapse: collapse;
+    }
+
+    table#main_table, table#main_table tr th, table#main_table tr td {
+        border: 1px solid black;
+    }
+</style>
+<p class="page_title_text"><input type="button" value="Print" onclick="printDiv()"></p>
+<div id="printDiv">
+    <style>
+    @media print {
+        table#main_table {
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        table#main_table, table#main_table tr th, table#main_table tr td {
+            border: 1px solid black;
+        }
+        table#main_table tr td.sign {
+            height: 100px;
+            width:100px;
+        }
+    }
+</style>
+<table id="main_export_able_table">
+    <tr>
+        <td>
+            <table width="100%">
+                <tr>
+                    <th>
+                        <b>
+                        <?='<span style="font-size:18px;">'.$_SESSION["CompanyRecord"]["coyname"].'</span>';?>
+                        </span></br>
+                        <u>List of total employees as at <?=date("d/m/Y")?></u>
+                        </b>
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table id="main_table">
+                <?php echo $tr;?>
+            </table>
+        </td>
+    </tr>    
+</table>
+</div>
+
+
+
+$tr='';
+    foreach($data as $k=>$val){
+        $tr.='<tr><td colspan="16"><b>'.$k.':</b></td></tr>';
+        $tr.='<tr>
+                <th>Sl<br>No.</th>
+                <th>Employee Code</th>
+                <th>Name of Employee</th>
+                <th>Designation</th>
+                <th>Date of<br>Joining</th>
+                <th>Date of<br>Confirmation</th>
+                <th>Service For</th>
+                <th>Basic</th>
+                <th>Total</th>
+                <th>NID No.</th>
+                <th>Last<br/>Education</th>
+                <th>BG</th>
+                <th>Status</th>
+                <th>DOB</th>
+                <th>Father Name</th>
+                <th>Present Address</th>
+              </tr>';
+        $i=1;
+        $salary_total=0;
+        $basic_total=0;
+        foreach($val as $row){
+            $date1 = new DateTime($row["date_of_join"]);
+            $now = new DateTime();
+            $interval = $now->diff($date1);
+            $age=$interval->y.' y, '.$interval->m.' m, '.$interval->d.' d';
+            $tr.='
+            <tr>
+                <td>'.$i.'</td>
+                <td>'.$row["code"].'</td>
+                <td>'.$row["name"].'</td>
+                <td>'.$row["designation_name"].'</td>
+                <td>'.date("d.m.Y",strtotime($row["date_of_join"])).'</td>
+                <td>'.($row["confirmation_date"]!='0000-00-00'||!empty($row["confirmation_date"]) ?date("d.m.Y",strtotime($row["confirmation_date"])):'').'</td>
+                <td>'.$age.'</td>
+                <td style="text-align:right;">'.number_format($row["basic"],2).'</td>    
+                <td style="text-align:right;">'.number_format($row["total_salary"],2).'</td> 
+                <td>'.$row["national_id"].'</td>    
+                <td>'.$row["education"].'</td>    
+                <td>'.$row["blood_group_name"].'</td>    
+                <td>'.$row["status_name"].'</td>
+                <td>'.date("d.m.Y",strtotime($row["birth_date"])).'</td> 
+                <td>'.$row["biological_father"].'</td>    
+                <td>'.$row["address1"].'</td>    
+            </tr>
+            ';
+            
+            $basic_total+=$row["basic"];
+            $salary_total+=$row["total_salary"];
+            $i++;
+        }
+        
+        $tr.='<tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align:right;"><b>'.number_format($basic_total,2).'</b></td>
+                <td style="text-align:right;"><b>'.number_format($salary_total,2).'</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>';
+    }
+
+if(isset($_POST["download"])){
+    include("includes/hrm_employee_list_report_xls_a1.php");
+    exit();
+}
