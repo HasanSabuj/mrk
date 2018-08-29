@@ -8,12 +8,13 @@ class Calendar_model extends CI_Model {
 	Public function getEvents()
 	{
 		$role=$this->session->userdata('userRole');
-		if($role==3){
-			$sql = "SELECT events.*,users.user_name FROM events,users WHERE events.start BETWEEN ? AND ? AND events.created_by=? AND users.id=events.created_by ORDER BY events.start ASC";
-			return $this->db->query($sql, array($_GET['start'], $_GET['end'],$this->session->userdata('userId')))->result();
-		}else{
+		if($role==1){
 			$sql = "SELECT events.id,events.title,CONCAT(events.description,', by - ',users.user_name) as description,events.e_time,events.color,events.start,events.end,events.allDay,users.user_name FROM events,users WHERE events.start BETWEEN ? AND ?  AND users.id=events.created_by ORDER BY events.start ASC";
 			return $this->db->query($sql, array($_GET['start'], $_GET['end']))->result();
+		}else{
+			
+			$sql = "SELECT events.*,users.user_name FROM events,users WHERE events.start BETWEEN ? AND ? AND events.created_by=? AND users.id=events.created_by ORDER BY events.start ASC";
+			return $this->db->query($sql, array($_GET['start'], $_GET['end'],$this->session->userdata('userId')))->result();
 		}
 
 	}
