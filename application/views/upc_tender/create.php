@@ -50,10 +50,10 @@
             </div>
           </div>
           <div class="item form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pic">Attachment
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pic">Attachments
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="file" id="pck" class="form-control col-md-7 col-xs-12" name="attachments" accept="image/gif, image/jpeg, image/png">
+              <input name="attachments[]" multiple="" class="form-control" accept="image/gif, image/jpeg, image/png, application/pdf, application/vnd.ms-excel" type="file" id="pck">
             </div>
           </div>
           <div class="ln_solid"></div>

@@ -38,28 +38,41 @@ class Upcoming_tender extends CI_Controller {
     		$data['priority']=$this->input->post('priority',true);
     		$id=$this->MUpcoming_tender->save($data);
 
-            if ($_FILES['attachments']['name']){
-                    $config['file_name'] = $id;
-                    $config['upload_path'] = './public/uploads/upct/';
-                    $config['allowed_types'] = '*';
-                    $config['overwrite'] = TRUE;
-                    $this->upload->initialize($config);
+            
+            if(!empty($_FILES['attachments']['name'][0])){
 
-                    if ( ! $this->upload->do_upload("attachments"))
-                    {
-                        $error = array('error' => $this->upload->display_errors());
-                        print_r($error);
-                        //die();
-                    }
-                    else
-                    {
-                        $filedata = $this->upload->data();
-                        $attach_pic=$filedata['file_name'];
-                        $this->MUpcoming_tender->update_pic($attach_pic,$id);
+                if(count($_FILES['attachments']['name'])>0){
+                    $this->load->library('upload');
+                    //$this->uploadfile($_FILES['userfile']);
+                    $files = $_FILES;
+                    $cpt = count($_FILES['attachments']['name']);
+                    $attachment=array();
+                    for($i=0; $i<$cpt; $i++)
+                    {   
+
+                            $_FILES['attachments']['name']= $id.'_'.time().'_'.$files['attachments']['name'][$i];
+                            $_FILES['attachments']['type']= $files['attachments']['type'][$i];
+                            $_FILES['attachments']['tmp_name']= $files['attachments']['tmp_name'][$i];
+                            $_FILES['attachments']['error']= $files['attachments']['error'][$i];
+                            $_FILES['attachments']['size']= $files['attachments']['size'][$i]; 
+
+
+                            $this->upload->initialize($this->set_upload_options());
+                            if ( ! $this->upload->do_upload('attachments'))
+                            {
+                                $error = array('error' => $this->upload->display_errors());
+                                print_r($error);
+                                //die();
+                            }
+                            $filedata = $this->upload->data();
+                            $attachment[]=$filedata['file_name'];
+
                     }
 
-                    
+                    $this->MUpcoming_tender->save_attachment($attachment,$id);
                 }
+
+            }    
 
     		$this->session->set_flashdata('success', 'Successfully Added');
 	        redirect('upcoming-tender', 'refresh');
@@ -102,28 +115,40 @@ class Upcoming_tender extends CI_Controller {
 
             }
 
-            if ($_FILES['attachments']['name']){
-                    $config['file_name'] = $id;
-                    $config['upload_path'] = './public/uploads/upct/';
-                    $config['allowed_types'] = '*';
-                    $config['overwrite'] = TRUE;
-                    $this->upload->initialize($config);
+            if(!empty($_FILES['attachments']['name'][0])){
 
-                    if ( ! $this->upload->do_upload("attachments"))
-                    {
-                        $error = array('error' => $this->upload->display_errors());
-                        print_r($error);
-                        //die();
-                    }
-                    else
-                    {
-                        $filedata = $this->upload->data();
-                        $attach_pic=$filedata['file_name'];
-                        $this->MUpcoming_tender->update_pic($attach_pic,$id);
+                if(count($_FILES['attachments']['name'])>0){
+                    $this->load->library('upload');
+                    //$this->uploadfile($_FILES['userfile']);
+                    $files = $_FILES;
+                    $cpt = count($_FILES['attachments']['name']);
+                    $attachment=array();
+                    for($i=0; $i<$cpt; $i++)
+                    {   
+
+                            $_FILES['attachments']['name']= $id.'_'.time().'_'.$files['attachments']['name'][$i];
+                            $_FILES['attachments']['type']= $files['attachments']['type'][$i];
+                            $_FILES['attachments']['tmp_name']= $files['attachments']['tmp_name'][$i];
+                            $_FILES['attachments']['error']= $files['attachments']['error'][$i];
+                            $_FILES['attachments']['size']= $files['attachments']['size'][$i]; 
+
+
+                            $this->upload->initialize($this->set_upload_options());
+                            if ( ! $this->upload->do_upload('attachments'))
+                            {
+                                $error = array('error' => $this->upload->display_errors());
+                                print_r($error);
+                                //die();
+                            }
+                            $filedata = $this->upload->data();
+                            $attachment[]=$filedata['file_name'];
+
                     }
 
-                    
+                    $this->MUpcoming_tender->save_attachment($attachment,$id);
                 }
+
+            }
 
             $this->session->set_flashdata('success', 'Successfully Updated');
             redirect('upcoming-tender', 'refresh');
@@ -162,5 +187,20 @@ class Upcoming_tender extends CI_Controller {
                 $this->MUpcoming_tender->update_pic('',$id);
             }
         }
+    }
+
+    private function set_upload_options()
+    {   
+    //  upload an image and document options
+        $config = array();
+        $config['upload_path'] = './public/uploads/upct/';
+        $config['allowed_types'] = '*';
+        $config['max_size'] = '0'; // 0 = no file size limit
+        $config['max_width']  = '0';
+        $config['max_height']  = '0';
+        $config['overwrite'] = TRUE;
+
+
+        return $config;
     }
 }

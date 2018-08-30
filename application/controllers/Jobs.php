@@ -526,6 +526,7 @@ class Jobs extends CI_Controller {
 	            	$job_id=$this->MJobs->create($data);
 
 	            	$this->MJobs->add_job_product($job_id,$cart_products);
+	            	
 	            	if(!empty($_FILES['attachments']['name'][0])){
 
 		            	if(count($_FILES['attachments']['name'])>0){

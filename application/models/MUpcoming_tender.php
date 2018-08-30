@@ -38,4 +38,19 @@ class MUpcoming_tender extends CI_Model {
 		$sql="update upc_tender set attachments=? where id=?";
 		$this->db->query($sql,[$pic,$id]);
 	}
+
+	public function save_attachment($attachments,$id){
+
+		$data=array();
+		foreach($attachments as $k=>$val){
+			$data[]=array(
+				'upct_id'=>$id,
+				'attachment_name'=>$val,
+				'attach_by'=>$this->session->userdata('userId')
+			);
+		}
+
+		$this->db->insert_batch('upct_attachment', $data);
+
+	}
 }

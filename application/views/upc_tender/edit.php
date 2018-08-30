@@ -51,33 +51,29 @@
             </div>
           </div>
           <div class="item form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pic">Attachment
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pic">Attachments
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="file" id="pck" class="form-control col-md-7 col-xs-12" name="attachments" accept="image/gif, image/jpeg, image/png">
+              <input name="attachments[]" multiple="" class="form-control" accept="image/gif, image/jpeg, image/png, application/pdf, application/vnd.ms-excel" type="file" id="pck">
             </div>
           </div>
           <?php
-            if($tender->attachments){
-              $attach_file='./public/uploads/upct/'.$tender->attachments;
-              if(file_exists($attach_file)){
-                echo'<div class="col-xs-12 text-center">
-                        <div class="thumbnail" style="max-width:300px;margin:auto;">
-                          <div class="image view view-first">
-                            <a href="'.base_url().'public/uploads/upct/'.$tender->attachments.'" download><img style="width: 100%; display: block;" src="'.base_url().'public/uploads/upct/'.$tender->attachments.'" alt="image" /></a>
-                          </div>
-                          <div class="caption">
-                            <div class="checkbox">
-                            <label>
-                              <input type="checkbox" class="flat" name="delete_current"> Delete Current Image
-                            </label>
-                          </div>
-                          </div>
-                        </div>
-                </div>';
-                echo'<div class="clearfix"></div>';
+            // select attachments
+          $sql="select * from upct_attachment where upct_id={$tender->id}";
+          $data=$this->db->query($sql)->result_array();
+            if(count($data)>0){
+              echo'<div class="col-xs-12">';
+              foreach($data as $img){
+                $attach_file='./public/uploads/upct/'.$img["attachment_name"];
+                if(file_exists($attach_file)){
+                  echo'
+                          <a href="'.base_url().'public/uploads/upct/'.$img["attachment_name"].'" download>'.$img["attachment_name"].'</a><br/>
+                  ';
+                } 
               }
+              echo'</div>';
             }
+            echo'<div class="clearfix"></div>';
           ?>
           <div class="ln_solid"></div>
           <div class="form-group">
