@@ -215,6 +215,28 @@ class MWork_plan extends CI_Model
 				and b.monthly_work_plan_id=c.id
 				and a.working_day_id=b.id order by d.id
 			";
+		}elseif($role==2){
+			$sql="
+				select 
+					a.*,
+					(select name from customers where id=a.customer_id) as customer_name,
+					(select name from principles where id=a.principle_id) as principle_name,
+					d.user_name,
+					d.profile_pic,
+					d.id as user_id
+				from 
+				work_plan_details_setup a,
+				work_plan_details b,
+				monthly_work_plan c,
+				users d
+				where d.id=c.user_id
+				and d.user_role<>1
+				and YEAR(c.month_date)=?
+				and MONTH(c.month_date)=?
+				and b.work_date=?
+				and b.monthly_work_plan_id=c.id
+				and a.working_day_id=b.id order by d.id
+			";
 		}else{
 			$sql="
 				select 
