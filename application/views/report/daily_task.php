@@ -15,7 +15,14 @@
           <select name="user" class="form-control" style="max-width: 240px">
             <option value="">Select User</option>
             <?php
-              $sql="select id,user_name from users where deleted=? and status=? and id>1";
+              if($this->session->userdata("userRole")==1){
+                $sql="select id,user_name from users where deleted=? and status=? and id>1";
+              }elseif($this->session->userdata("userRole")==2){
+                $sql="select id,user_name from users where deleted=? and status=? and id>1 and user_role<>1";
+              }elseif($this->session->userdata("userRole")==3){
+                $sql="select id,user_name from users where deleted=? and status=? and id={$this->session->userdata("userId")}";
+              }
+              
               $users=$this->db->query($sql,[0,1])->result_array();
               foreach($users as $user){
                 echo'<option value="'.$user["id"].'">'.$user["user_name"].'</option>';
