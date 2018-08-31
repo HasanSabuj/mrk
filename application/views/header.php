@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>MinMax Tech Ltd.</title>
+    <title>Marketing Team Management System</title>
     
     <!-- Animate.css -->
     <?php
